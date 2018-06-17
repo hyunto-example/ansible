@@ -22,4 +22,4 @@
       service:
         name: nginx
         state: started
-        enabled: truet
+        enabled: true
