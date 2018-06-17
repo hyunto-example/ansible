@@ -1,0 +1,4 @@
+---
+- name: 플레이북 튜토리얼
+  hosts: all
+  tasks:
