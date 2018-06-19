@@ -1,4 +1,20 @@
 ---
+- name: 간단한 플레이븍 예제
+  hosts: all
+  vars:
+    user_name: ansibleAdmin
+    group_name: ansible
+  become: true
+  tasks:
+    - name: group_name 변수로 지정된 그룹을 작성
+      group:
+        name: "{{ group_name }}"
+    - name: user_name 변수로 지정된 사용자를 작성하고, 그 위의 그룹에 할당한다.
+      user:
+        name: "{{ user_name }}"
+        groups: "{{ group_name }}"
+        generate_ssh_key: true
+
 - name: 플레이북 튜토리얼
   hosts: all
   become: true
@@ -23,3 +39,81 @@
         name: nginx
         state: started
         enabled: true
+
+- name: 2.13 자주 쓰는 모듈 - file
+  hosts: all
+  become: true
+  tasks: 
+    - name: /tmp/dir1을 작성
+      file:
+        path: /tmp/dir1
+        state: directory
+
+    - name: /tmp/dir1의 심볼릭 링크를 /tmp/link_to_dir1에 생성
+      file:
+        src: /tmp/dir1
+        dest: /tmp/link_to_dir1
+        state: link
+
+    - name: /tmp/dir1을 ansibleAdmin 사용자/스룹 소유로 해서 모든 사용자가 실행할 수 있다.
+      file:
+        path: /tmp/dir1
+        state: directory
+        owner: ansibleAdmin
+        group: ansible
+        mode: "u=rwx,g=rx,o=rx"
+
+- name: 2.13 자주 쓰는 모듈 - copy
+  hosts: all
+  become: true
+  tasks:
+    - name: 앤서블 운용 서버의 파일을 원격으로 복사
+      copy:
+        src: original_file
+        dest: ~/copied_file
+    - name: 복사된 파일 내용을 변수에 저장
+      command: cat ~/copied_file
+      register: copied_file_content
+    - name: copied_file_content 변수 값 출력
+      debug: msg={{ copied_file_content.stdout }}
+
+- name: 2.13 자주 쓰는 모듈 - lineinfile
+  hosts: all
+  become: true
+  tasks:
+    - name: root가 패스워드로 SSH 로그인하는 것을 금지
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin\s+'
+        line: PermitRootLogin without-password
+        validate: sshd -t -f %s
+      notify:
+        - sshd 재시작
+  handlers:
+    - name: sshd 재시작
+      service:
+        name: sshd
+        state: restarted
+
+- name: 2.13 자주 쓰는 모듈 - command
+  hosts: all
+  become: true
+  tasks:
+    - name: tmp 템플릿 내에서 암호 없는 SSH 키를 생성
+      command: "/usr/bin/ssh-keygen -b 2048 -t rsa -N '' -f /tmp/new-id_rsa"
+      args:
+        creates: /tmp/new-id_rsa
+    - name: HOME의 환경 변수를 출력
+      command: "echo {{ ansible_env.HOME | quote }}"
+#    - name: 에러가 발생하는 환경 변수 읽기의 예
+#      command: "echo {{ ansible_env.NEW_ENV }}"
+#        environment:
+#          NEW_ENV: "new environment variable"
+
+- name: 2.13 자주 쓰는 모듈 - raw
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: yum으로 python-simplejson 설치
+      raw: yum -y install python-simplejson
