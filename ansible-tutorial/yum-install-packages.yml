@@ -1,0 +1,26 @@
+---
+  - name: with_items를 사용해 다수의 패키지를 YUM으로 설치하는 플레이
+    hosts: all
+    become: true
+    vars:
+      development_packages:
+        - gcc
+        - make
+      openssl_packages:
+        - openssl
+        - openssl-devel
+    tasks:
+      - name: yum으로 의존 패키지를 설치
+        yum:
+          name: "{{ item }}"
+        with_items:
+          - gcc
+          - make
+      - name: yum으로 의존 패키지를 설치 - item 이외의 변수 이름을 사용
+        yum:
+          name: "{{ package_name }}"
+        with_items:
+          - "{{ development_packages }}"
+          - "{{ openssl_packages }}"
+        loop_control:
+          loop_var: package_name

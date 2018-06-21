@@ -1,0 +1,8 @@
+---
+  - name: 실행 상태가 성공이지만 에러를 반환하는 명령
+    hosts: all
+    tasks:
+      - name: CPU 정보를 불러온다.
+        command: cat /proc/cpuinfo
+        register: cpu_info
+        failed_when: (cpu_info | failed) or ('[ERROR] in cpu_info.stderr')

@@ -1,0 +1,12 @@
+---
+  - name: 변수의 동작을 확인
+    hosts: localhost
+    vars:
+      my_var: JUNG
+      admin_user:
+        name: suji
+        uid: 1001
+    tasks:
+      - name: my_var 값을 디버깅으로 확인
+        debug:
+          msg: "변수 my_var 값은 {{ my_var | lower }} 이다. 사용자 이름 {{ admin_user.name }}의 UID는 {{ admin_user.uid }} 입니다."

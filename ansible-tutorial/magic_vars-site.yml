@@ -1,0 +1,51 @@
+---
+  - name: 모든 호스트에 대한 setup만 실행
+    hosts: all
+
+  - name: 매직 변수의 동작을 확인하기 위한 플레이
+    hosts: all
+    tasks:
+      - name: host1의 OS 정보를 한 번만 표시
+        debug:
+          msg: "{{ hostvars['host1'].ansible_distribution }}"
+        run_once: true
+
+      - name: 인벤터리 전체의 그룹 정보를 표시
+        debug:
+          var: groups
+        run_once: true
+      - name: 각 호스트에 할당된 그룹을 표시
+        debug:
+          var: group_names
+
+      - name: 플레이북 파일이 있는 디렉터리의 경로를 표시
+        debug:
+          var: playbook_dir
+      - name: 인벤터리 파일이 있는 디렉터리의 경로를 표시
+        debug:
+          var: inventory_dir
+      - name: 인벤터리 파일 자신의 경로를 표시 (인벤터리를 디렉터리에서 지정한 경우는 디렉터리 표시)
+        debug:
+          var: inventory_file
+
+      - name: ansible-playbook 명령어를 실행하는 파이썬의 경로를 표시
+        debug:
+          var: ansible_playbook_python
+      - name: ansible-playbook 명령에서 --check 옵션 사용 여부를 표시
+        debug:
+          var: ansible_check_mode
+
+      - name: 인벤터리에 붙여진 호스트 이름을 표시 (작업 대상 머신의 실제 호스트 이름이 들어있는 ansible_hostname과는 다름을 주의)
+        debug:
+          var: inventory_hostname
+      - name: 플레이에서 배포 대상이 되는 호스트 이름의 목록
+        debug:
+          var: inventory_play_hosts
+      - name: 롤링 업데이트를 실행하는 경우에 현재 배포 중인 호스트 이름의 목록, 대부분 배포할 때에 ansible_play_hosts의 값과 같다
+        debug:
+          var: ansible_play_batch
+
+      - name: 매직 변수를 사용해 group-a의 모든 호스트의 IPv4 주소를 출력
+        debug:
+          var: "{{ hostvars[item].ansible_default_ipv4.address }}"
+        with_items: "{{ groups['group-a'] }}"
