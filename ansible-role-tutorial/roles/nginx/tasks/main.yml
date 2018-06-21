@@ -1,0 +1,20 @@
+---
+# tasks file for nginx
+- name: libselinux-python과 EPEL Repository 설치
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libselinux-python
+    - epel-release
+
+- name: nginx 설치
+  yum:
+    name: nginx
+    state: present
+
+- name: nginx 시작과 자동 시작 설정
+  service:
+    name: nginx
+    state: started
+    enabled: true
