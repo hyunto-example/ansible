@@ -18,3 +18,25 @@
     name: nginx
     state: started
     enabled: true
+
+- name: nginx.conf 템플릿 활용
+  template:
+    src: nginx.j2.conf
+    dest: /etc/nginx/nginx.conf
+    validate: nginx -t -c %s
+  notify:
+    - nginx reload
+
+- name: nginx용 그룹 작성
+  group:
+    name: "{{ nginx_group }}"
+    system: true
+
+- name: nginx용 사용자 생성
+  user:
+    name: "{{ nginx_user }}"
+    home: /var/lib/nginx
+    shell: /sbin/nologin
+    groups: "{{ nginx_group }}"
+    append: true
+    system: true

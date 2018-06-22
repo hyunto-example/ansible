@@ -1,0 +1,5 @@
+---
+  - name: yum 패키지 설치
+    yum:
+      need: "{{ item }}"
+    with_items: "{{ yum_packages }}"

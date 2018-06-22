@@ -1,0 +1,6 @@
+---
+  - name: nginx 설치
+    hosts: all
+    become: true
+    roles:
+      - role: geerlingguy.nginx

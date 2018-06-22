@@ -1,0 +1,10 @@
+---
+  - name: gcc와 make를 설치하는 플레이
+    hosts: all
+    become: true
+    tasks:
+      - include: yum_install.yum_install
+        vars:
+          yum_packages:
+            - gcc
+            - make
