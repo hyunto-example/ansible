@@ -176,5 +176,7 @@ venv.bak/
 .vagrant/
 *.box
 
+### Python Virtual Environment ###
+py27-ansible/**
 
 # End of https://www.gitignore.io/api/git,python,ansible,vagrant,intellij

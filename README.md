@@ -7,10 +7,10 @@
 
 ## 사용법
 ```bash
-$ pip install -r requirements.txt
-
-or
-
+$ pip2 install virtualenv
+$ python2 -m virtualenv py27-ansible
 $ cd py27-ansible
 $ source bin/activate
+$ cd ..
+$ pip install -r requirements.txt
 ```
