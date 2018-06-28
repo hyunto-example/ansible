@@ -1,4 +1,16 @@
 ---
+  # - name: 파이프라이닝 대응용 플레이
+  #   hosts: all
+  #   become: yes
+  #   vars:
+  #     ansible_ssh_pipelining: no
+  #   tasks:
+  #     - name: ansible_user에 대한 requiretty 설정을 비활성화
+  #       lineinfile:
+  #         dest: /etc/sudoers
+  #         regexp: '^Defaults:{{ ansible_user }}\srequiretty'
+  #         line: 'Defaults:{{ ansible_user }} requiretty'
+
   - name: CnetOS 7에서 워드프레스 설치
     hosts: all
     become: true
@@ -27,8 +39,18 @@
         tags:
           - php-fpm
       - name: nginx
+        vars:
+          nginx_default_port: 8080
         tags:
           - nginx
       - name: wordpress
+        vars:
+          wordpress_db_name: "{{ db_name }}"
+          wordpress_db_user_name: "{{ db_user }}"
+          wordpress_db_user_password: "{{ db_password }}"
+          wordpress_nginx_user: "{{ nginx_user }}"
+          wordpress_nginx_group: "{{ nginx_group }}"
+          wordpress_nginx_config_dir: "{{ nginx_config_dir }}"
+          wordpress_php_fpm_config_dir: "{{ php_fpm_config_dir }}"
         tags:
           - wordpress
