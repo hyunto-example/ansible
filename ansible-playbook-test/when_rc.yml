@@ -1,0 +1,22 @@
+---
+  - hosts: localhost
+    connection: local
+    gather_facts: false
+    tasks:
+      - name: This task always fails
+        command: /bin/false
+        register: fail_result
+        ignore_errors: true
+
+      - name: Debug message when failed
+        debug:
+          msg: "Debug message when failed"
+        when: fail_result.rc != 0
+
+      - name: Debug message when successed
+        debug:
+          msg: "Debug message when successed"
+        when: fail_result.rc == 0
+
+# 이 플레이북은 에러 반환 코드에 따른 처리를 위해 분기문(when)이 많아져 복잡해 집니다.
+# 좀 더 간단하게 구현하려면 block 문을 사용합니다.

@@ -1,0 +1,18 @@
+---
+  - hosts: localhost
+    connection: local
+    tasks:
+      - name: Mac OS is supported
+        assert:
+          that:
+            - "ansible_distribution == 'MacOSX'"
+            - "ansible_os_family == 'Darwin'"
+            - "ansible_distribution_major_version == '10'"
+        when: ansible_distribution == 'MacOSX'
+      - name: CentOS 7 or RHEL 7 is supported
+        assert:
+          that:
+            - "ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'"
+            - "ansible_os_family == 'CentOS' or ansible_os_family == 'RedHat'"
+            - "ansible_distribution_major_version == '7'"
+        when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
