@@ -2,20 +2,22 @@
   - hosts: localhost
     connection: local
     gather_facts: false
+    become: false
     tasks:
       - block:
           - debug:
               msg: 'i execute normally'
-          - command: /bin/false
-            ignore_errors: true
+          - command: /usr/bin/false
           - debug:
               msg: 'i never execute, cause ERROR'
-       # rescue:
-       #    - debug:
-       #        msg: 'I caught an error'
-       #    - command: /bin/false
-       #    - debug:
-       #        msg: 'I also never execute :-('
-       # always:
-       #    - debug:
-       #        msg: 'this always executes'
+
+        rescue:
+          - debug:
+              msg: 'I caught an error'
+          - command: /usr/bin/false
+          - debug:
+              msg: 'I also never execute :-('
+
+        always:
+          - debug:
+              msg: 'this always executes'
